@@ -21,6 +21,9 @@ struct ifd_entry {
     uint32_t data_offset;
 };
 
+void
+tiff_read_header(FILE *fp, struct tiff_header *header);
+
 int
 tiff_read_ifd_entries(FILE *fp,
                       struct ifd_entry **ifd_entries_ptr,

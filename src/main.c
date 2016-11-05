@@ -58,11 +58,7 @@ print_ifds(const char *file_name)
         exit(EXIT_FAILURE);
     }
     fseek(fp, (long)tiff_offset, SEEK_SET);
-    bytes_read = fread(&tiff_header, 1, sizeof(struct tiff_header), fp);
-    if (bytes_read < sizeof(struct tiff_header)) {
-        fprintf(stderr, "ERROR: Could not read TIFF header\n");
-        abort();
-    }
+    tiff_read_header(fp, &tiff_header);
     next_ifd_offset = tiff_header.ifd_offset;
     while (next_ifd_offset != 0 || bytes_read == 0) {
         offset = (long)next_ifd_offset;

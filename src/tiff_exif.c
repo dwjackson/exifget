@@ -8,6 +8,15 @@
 #define SHORT_LENGTH 2
 #define LONG_LENGTH 4
 
+void
+tiff_read_header(FILE *fp, struct tiff_header *header)
+{
+    if (fread(header, 1, sizeof(struct tiff_header), fp) == 0) {
+        fprintf(stderr, "ERROR: Could not read TIFF header\n");
+        abort();
+    }
+}
+
 int
 tiff_read_ifd_entries(FILE *fp,
                       struct ifd_entry **ifd_entries_ptr,
@@ -17,8 +26,7 @@ tiff_read_ifd_entries(FILE *fp,
     int i;
     size_t bytes_read;
 
-    bytes_read = fread(&num_entries, 1, SHORT_LENGTH, fp);
-    if (bytes_read < SHORT_LENGTH) {
+    if (fread(&num_entries, 1, SHORT_LENGTH, fp) == 0) {
         fprintf(stderr, "ERROR: Could not read number of IFD entries\n");
         abort();
     }
