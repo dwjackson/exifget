@@ -15,6 +15,11 @@ tiff_read_header(FILE *fp, struct tiff_header *header)
         fprintf(stderr, "ERROR: Could not read TIFF header\n");
         abort();
     }
+    if (header->magic_number != TIFF_MAGIC_NUMBER) {
+        char err_fmt[] = "ERROR: Bad magic number in TIFF segment: 0x%x\n";
+        fprintf(stderr, err_fmt, header->magic_number);
+        abort();
+    }
 }
 
 int
