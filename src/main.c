@@ -85,7 +85,7 @@ file_tiff_offset(FILE *fp)
     size_t bytes_read;
     
     bytes_read = fread(magic, MAGIC_NUMBER_LENGTH, 1, fp);
-    if (bytes_read < MAGIC_NUMBER_LENGTH) {
+    if (bytes_read == 0) {
         fprintf(stderr, "ERROR: Could not read magic number\n");
         abort();
     }

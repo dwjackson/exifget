@@ -76,7 +76,7 @@ print_string(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
         }
         str = malloc(entry->count);
         bytes_read = fread(str, entry->count, 1, fp);
-        if (bytes_read < entry->count) {
+        if (bytes_read == 0) {
             fprintf(stderr, "ERROR: Could not read string data\n");
             abort();
         }
