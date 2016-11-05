@@ -4,6 +4,9 @@ ExifGet is a tool with which you can read EXIF data from picture files.
 
 ## Building
 
+ExifGet has few dependencies, but it does depend on having a C compiler that is
+compliant with the C99 standard.
+
 If you downloaded ExifGet from the Git repository, you will need to have the
 GNU Autotools installed. To prepare the project for compilation:
 
