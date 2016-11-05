@@ -1,2 +1,4 @@
 *.CR2
 *.JPG
+cscope.out
+tags
