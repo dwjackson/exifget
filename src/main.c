@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#define USAGE_FMT "Usage: %s [options] [photo_file]\n"
+#define USAGE_FMT "Usage: %s [photo_file]\n"
 
 #define MAGIC_NUMBER_LENGTH 4
 #define JPEG_TIFF_OFFSET 12
