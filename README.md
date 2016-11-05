@@ -1,6 +1,6 @@
 # ExifGet
 
-ExifGet is a tool with which you can read EXIF data from picture files.
+ExifGet is a tool with which you can read Exif data from picture files.
 
 ## Building
 
@@ -29,7 +29,7 @@ installation prefix).
 
 ## Usage
 
-To read all the EXIF data that ExifGet can find in a picture file:
+To read all the Exif data that ExifGet can find in a picture file:
 
 ```sh
 exifget [picture_file]
