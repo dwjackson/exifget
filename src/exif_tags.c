@@ -60,14 +60,7 @@ exif_tags_array_init(struct exif_tag **exif_tags_ptr)
 char
 *exif_tag_name_r(uint16_t tag, struct exif_tag *exif_tags)
 {
-    char *name;
-
-    name = NULL;
-    if (exif_tags[tag].name != NULL) {
-        name = exif_tags[tag].name;
-    }
-
-    return name;
+    return exif_tags[tag].name;
 }
 
 char
