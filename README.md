@@ -31,3 +31,15 @@ To read all the EXIF data that ExifGet can find in a picture file:
 ```sh
 exifget [picture_file]
 ```
+
+## Supported File Types
+
+ExifGet has been tested on the following picture file formats:
+
+* JPEG
+* Canon CR2
+
+## License
+
+ExifGet is licensed under the
+[MIT License](https://opensource.org/licenses/MIT).
