@@ -5,6 +5,7 @@
 
 #define USAGE_FMT "Usage: %s [options] [photo_file]\n"
 
+#define MAGIC_NUMBER_LENGTH 4
 #define JPEG_TIFF_OFFSET 12
 #define TIFF_TIFF_OFFSET 0
 
@@ -35,6 +36,7 @@ print_ifds(const char *file_name)
 {
     FILE *fp;
     int tiff_offset;
+    size_t bytes_read;
     struct tiff_header tiff_header;
     long offset;
     int num_ifd_entries;
@@ -55,9 +57,13 @@ print_ifds(const char *file_name)
         exit(EXIT_FAILURE);
     }
     fseek(fp, (long)tiff_offset, SEEK_SET);
-    fread(&tiff_header, 1, sizeof(struct tiff_header), fp);
+    bytes_read = fread(&tiff_header, 1, sizeof(struct tiff_header), fp);
+    if (bytes_read < sizeof(struct tiff_header)) {
+        fprintf(stderr, "ERROR: Could not read TIFF header\n");
+        abort();
+    }
     next_ifd_offset = tiff_header.ifd_offset;
-    while (next_ifd_offset != 0) {
+    while (next_ifd_offset != 0 || bytes_read == 0) {
         offset = (long)next_ifd_offset;
         fseek(fp, offset + tiff_offset, SEEK_SET);
         num_ifd_entries = tiff_read_ifd_entries(fp, &ifd_entries, tiff_offset);
@@ -66,7 +72,7 @@ print_ifds(const char *file_name)
             print_ifd_entry(&entry, fp, tiff_offset);
         }
         free(ifd_entries);
-        fread(&next_ifd_offset, 1, 4, fp);
+        bytes_read = fread(&next_ifd_offset, 1, 4, fp);
     }
     fclose(fp);
 }
@@ -74,10 +80,15 @@ print_ifds(const char *file_name)
 int
 file_tiff_offset(FILE *fp)
 {
-    uint8_t magic[4];
+    uint8_t magic[MAGIC_NUMBER_LENGTH];
     int offset;
+    size_t bytes_read;
     
-    fread(magic, 4, 1, fp);
+    bytes_read = fread(magic, MAGIC_NUMBER_LENGTH, 1, fp);
+    if (bytes_read < MAGIC_NUMBER_LENGTH) {
+        fprintf(stderr, "ERROR: Could not read magic number\n");
+        abort();
+    }
     if (magic[0] == 0xFF
             && magic[1] == 0xD8
             && magic[2] == 0xFF

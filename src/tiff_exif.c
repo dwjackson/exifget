@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SHORT_LENGTH 2
+#define LONG_LENGTH 4
+
 int
 tiff_read_ifd_entries(FILE *fp,
                       struct ifd_entry **ifd_entries_ptr,
@@ -12,15 +15,27 @@ tiff_read_ifd_entries(FILE *fp,
 {
     uint16_t num_entries;
     int i;
+    size_t bytes_read;
 
-    fread(&num_entries, 1, 2, fp);
+    bytes_read = fread(&num_entries, 1, SHORT_LENGTH, fp);
+    if (bytes_read < SHORT_LENGTH) {
+        fprintf(stderr, "ERROR: Could not read number of IFD entries\n");
+        abort();
+    }
     *ifd_entries_ptr = malloc(num_entries * sizeof(struct ifd_entry));
     if (*ifd_entries_ptr == NULL) {
         fprintf(stderr, "ERROR: Could not malloc() for ifd entries\n");
         abort();
     }
     for (i = 0; i < num_entries; i++) {
-        fread(*ifd_entries_ptr + i, 1, sizeof(struct ifd_entry), fp);
+        bytes_read = fread(*ifd_entries_ptr + i,
+                           1,
+                           sizeof(struct ifd_entry),
+                           fp);
+        if (bytes_read < sizeof(struct ifd_entry)) {
+            fprintf(stderr, "ERROR: Could not read IFD entry\n");
+            abort();
+        }
     }
     return (int)num_entries;
 }
@@ -31,10 +46,18 @@ print_byte(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
 
     long offset;
     uint8_t data;
+    size_t bytes_read;
 
     offset = entry->data_offset;
-    fseek(fp, offset + tiff_offset, SEEK_SET);
-    fread(&data, 1, 2, fp);
+    if (fseek(fp, offset + tiff_offset, SEEK_SET) != 0) {
+        fprintf(stderr, "ERROR: could not seek to data\n");
+        abort();
+    }
+    bytes_read = fread(&data, 1, 1, fp);
+    if (bytes_read < 1) {
+        fprintf(stderr, "ERROR: Could not read byte data\n");
+        abort();
+    }
     printf("%hhu\n", data);
 }
 
@@ -43,17 +66,20 @@ print_string(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
 {
     long offset;
     char *str;
-    int retval;
+    size_t bytes_read;
 
     str = NULL;
     offset = entry->data_offset;
     if (offset > 0) {
-        retval = fseek(fp, offset + tiff_offset, SEEK_SET);
-        if (retval != 0) {
+        if (fseek(fp, offset + tiff_offset, SEEK_SET) != 0) {
             abort();
         }
         str = malloc(entry->count);
-        fread(str, entry->count, 1, fp);
+        bytes_read = fread(str, entry->count, 1, fp);
+        if (bytes_read < entry->count) {
+            fprintf(stderr, "ERROR: Could not read string data\n");
+            abort();
+        }
     }
     if (str != NULL) {
         printf("%s", str);
@@ -67,10 +93,18 @@ print_short(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
 {
     long offset;
     uint16_t data;
+    size_t bytes_read;
 
     offset = entry->data_offset;
-    fseek(fp, offset + tiff_offset, SEEK_SET);
-    fread(&data, 1, 2, fp);
+    if(fseek(fp, offset + tiff_offset, SEEK_SET) != 0) {
+        fprintf(stderr, "ERROR: Could not seek to data (short)\n");
+        abort();
+    }
+    bytes_read = fread(&data, 1, SHORT_LENGTH, fp);
+    if (bytes_read < SHORT_LENGTH) {
+        fprintf(stderr, "ERROR: Could not read data (short)\n");
+        abort();
+    }
     printf("%hu\n", data);
 }
 
@@ -79,10 +113,18 @@ print_long(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
 {
     long offset;
     uint32_t data;
+    size_t bytes_read;
 
     offset = entry->data_offset;
-    fseek(fp, offset + tiff_offset, SEEK_SET);
-    fread(&data, 1, 4, fp);
+    if (fseek(fp, offset + tiff_offset, SEEK_SET) != 0) {
+        fprintf(stderr, "ERROR: Could not seek to data (long)\n");
+        abort();
+    }
+    bytes_read = fread(&data, 1, LONG_LENGTH, fp);
+    if (bytes_read < LONG_LENGTH) {
+        fprintf(stderr, "ERROR: Could not read data (long)\n");
+        abort();
+    }
     printf("%u\n", data);
 }
 
@@ -92,11 +134,20 @@ print_rational(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
     long offset;
     uint32_t numerator;
     uint32_t denominator;
+    size_t bytes_read;
 
     offset = entry->data_offset;
     fseek(fp, offset + tiff_offset, SEEK_SET);
-    fread(&numerator, 1, 4, fp);
-    fread(&denominator, 1, 4, fp);
+    bytes_read = fread(&numerator, 1, 4, fp);
+    if (bytes_read < LONG_LENGTH) {
+        fprintf(stderr, "ERROR: Could not read numerator of rational\n");
+        abort();
+    }
+    bytes_read = fread(&denominator, 1, 4, fp);
+    if (bytes_read < LONG_LENGTH) {
+        fprintf(stderr, "ERROR: Could not read denominator of rational\n");
+        abort();
+    }
     printf("%u/%u\n", numerator, denominator);
 }
 
