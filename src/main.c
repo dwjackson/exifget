@@ -1,4 +1,5 @@
 #include "tiff_exif.h"
+#include "exif_tags.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -11,6 +12,9 @@
 
 void
 print_ifds(const char *file_name);
+
+void
+print_ifd(FILE *fp, long offset, int tiff_offset);
 
 int
 file_tiff_offset(FILE *fp);
@@ -39,11 +43,8 @@ print_ifds(const char *file_name)
     size_t bytes_read;
     struct tiff_header tiff_header;
     long offset;
-    int num_ifd_entries;
-    struct ifd_entry *ifd_entries;
     uint32_t next_ifd_offset;
     int i;
-    struct ifd_entry entry;
 
     fp = fopen(file_name, "rb");
     if (fp == NULL) {
@@ -65,16 +66,31 @@ print_ifds(const char *file_name)
     next_ifd_offset = tiff_header.ifd_offset;
     while (next_ifd_offset != 0 || bytes_read == 0) {
         offset = (long)next_ifd_offset;
-        fseek(fp, offset + tiff_offset, SEEK_SET);
-        num_ifd_entries = tiff_read_ifd_entries(fp, &ifd_entries, tiff_offset);
-        for (i = 0; i < num_ifd_entries; i++) {
-            entry = ifd_entries[i];
-            print_ifd_entry(&entry, fp, tiff_offset);
-        }
-        free(ifd_entries);
+        print_ifd(fp, offset, tiff_offset);
         bytes_read = fread(&next_ifd_offset, 1, 4, fp);
     }
     fclose(fp);
+}
+
+void
+print_ifd(FILE *fp, long offset, int tiff_offset)
+{
+    int num_ifd_entries;
+    struct ifd_entry *ifd_entries;
+    struct ifd_entry entry;
+    int i;
+
+    fseek(fp, offset + tiff_offset, SEEK_SET);
+    num_ifd_entries = tiff_read_ifd_entries(fp, &ifd_entries, tiff_offset);
+    for (i = 0; i < num_ifd_entries; i++) {
+        entry = ifd_entries[i];
+        if (entry.tag != EXIF_TAG_EXIF_IFD) {
+            print_ifd_entry(&entry, fp, tiff_offset);
+        } else {
+            print_ifd(fp, (long)(entry.data_offset), tiff_offset);
+        }
+    }
+    free(ifd_entries);
 }
 
 int

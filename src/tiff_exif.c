@@ -43,7 +43,6 @@ tiff_read_ifd_entries(FILE *fp,
 static void
 print_byte(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
 {
-
     long offset;
     uint8_t data;
     size_t bytes_read;
@@ -152,6 +151,24 @@ print_rational(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
 }
 
 void
+print_undefined(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
+{
+    long offset;
+    uint8_t data;
+
+    offset = entry->data_offset;
+    if (fseek(fp, offset + tiff_offset, SEEK_SET) != 0) {
+        fprintf(stderr, "ERROR: could not seek to data\n");
+        abort();
+    }
+    if (fread(&data, 1, 1, fp) != 0) {
+        printf("%hhu\n", data);
+    } else {
+        printf("\n");
+    }
+}
+
+void
 print_ifd_entry(const struct ifd_entry *entry, FILE *fp, int tiff_offset)
 {
     long curr_offset;
@@ -180,6 +197,9 @@ print_ifd_entry(const struct ifd_entry *entry, FILE *fp, int tiff_offset)
         break;
     case 5: /* RATIONAL */
         print_rational(fp, entry, tiff_offset);
+        break;
+    case 7: /* UNDEFINED */
+        print_undefined(fp, entry, tiff_offset);
         break;
     default:
         printf("Unrecognized data type = %d\n", entry->type);

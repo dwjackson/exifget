@@ -50,9 +50,15 @@ exif_tags_array_init(struct exif_tag **exif_tags_ptr)
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_DATETIME, "DateTime");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_ARTIST, "Artist");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_COPYRIGHT, "Copyright");
-    exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXIF_TAG, "ExifTag");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXIF_IFD, "ExifIFD");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_JPEG_INTERCHANGE_FORMAT, "JPEGInterchangeFormat");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, "JPEGInterchangeFormatLength");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXPOSURE_TIME, "ExposureTime");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_FNUMBER, "FNumber");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXPOSURE_PROGRAM, "ExposureProgram");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_DATETIME_ORIGINAL, "DateTimeOriginal");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_DATETIME_DIGITIZED, "DateTimeDigitized");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_COMPONENTS_CONFIGURATION, "ComponentsConfiguration");
 
     /* TODO */
 }

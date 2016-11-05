@@ -30,10 +30,16 @@ struct exif_tag {
 #define EXIF_TAG_RESOLUTION_UNIT                296
 #define EXIF_TAG_DATETIME                       306
 #define EXIF_TAG_ARTIST                         315
-#define EXIF_TAG_COPYRIGHT                    33432
-#define EXIF_TAG_EXIF_TAG                     34665
 #define EXIF_TAG_JPEG_INTERCHANGE_FORMAT        513
 #define EXIF_TAG_JPEG_INTERCHANGE_FORMAT_LENGTH 514
+#define EXIF_TAG_COPYRIGHT                    33432
+#define EXIF_TAG_EXPOSURE_TIME                33434
+#define EXIF_TAG_FNUMBER                      33437
+#define EXIF_TAG_EXIF_IFD                     34665
+#define EXIF_TAG_EXPOSURE_PROGRAM             34850
+#define EXIF_TAG_DATETIME_ORIGINAL            36867
+#define EXIF_TAG_DATETIME_DIGITIZED           36868
+#define EXIF_TAG_COMPONENTS_CONFIGURATION     37121
 
 void
 exif_tags_array_init(struct exif_tag **exif_tags_ptr);
