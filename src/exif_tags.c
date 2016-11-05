@@ -53,12 +53,38 @@ exif_tags_array_init(struct exif_tag **exif_tags_ptr)
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXIF_IFD, "ExifIFD");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_JPEG_INTERCHANGE_FORMAT, "JPEGInterchangeFormat");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, "JPEGInterchangeFormatLength");
-    exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXPOSURE_TIME, "ExposureTime");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_YCBCR_POSITIONING, "YCbCrPositioning");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, "JPEGInterchangeFormatLength"); exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXPOSURE_TIME, "ExposureTime");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_PHOTOGRAPHIC_SENSITIVITY, "PhotographicSensitivity");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXIF_VERSION, "ExifVersion");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_FNUMBER, "FNumber");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXPOSURE_PROGRAM, "ExposureProgram");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_DATETIME_ORIGINAL, "DateTimeOriginal");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_DATETIME_DIGITIZED, "DateTimeDigitized");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_COMPONENTS_CONFIGURATION, "ComponentsConfiguration");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_SHUTTER_SPEED, "ShutterSpeed");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_APERTURE, "Aperture");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXPOSURE_BIAS, "ExposureBias");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_METERING_MODE, "MeteringMode");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_FLASH, "Flash");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_FOCAL_LENGTH, "FocalLength");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_MAKER_NOTE, "MakerNote");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_USER_COMMENT, "UserComment");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_SUBSEC_TIME, "SubsecTime");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_SUBSEC_TIME_ORIGINAL, "SubsecTimeOriginal");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_SUBSEC_TIME_DIGITIZED, "SubsecTimeDigitized");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_FLASHPIX_VERSION, "FlashpixVersion");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_COLOR_SPACE, "ColorSpace");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_PIXEL_X_DIMENSION, "PixelXDimension");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_PIXEL_Y_DIMENSION, "PixelYDimension");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_INTEROPERABILITY_IFD, "InterOperabilityIFD");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_FOCAL_PLANE_X_RESOLUTION, "FocalPlaneXResolution");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_FOCAL_PLANE_Y_RESOLUTION, "FocalPlaneYResolution");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_FOCAL_PLANE_RESOLUTION_UNIT, "FocalPlaneResolutionUnit");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_CUSTOM_RENDERED, "CustomRendered");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXPOSURE_MODE, "ExposureMode");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_WHITE_BALANCE, "WhiteBalance");
+    exif_tag_init(*exif_tags_ptr, EXIF_TAG_SCENE_CAPTURE_TYPE, "SceneCaptureType");
 
     /* TODO */
 }

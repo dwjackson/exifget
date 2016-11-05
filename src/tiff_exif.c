@@ -168,6 +168,24 @@ print_undefined(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
     }
 }
 
+static void
+print_srational(FILE *fp, const struct ifd_entry *entry, int tiff_offset)
+{
+    long offset;
+    int32_t numerator;
+    int32_t denominator;
+
+    offset = entry->data_offset;
+    if (fseek(fp, offset + tiff_offset, SEEK_SET) != 0) {
+        fprintf(stderr, "ERROR: could not seek to data (srational) \n");
+        abort();
+    }
+    if (fread(&numerator, 1, 4, fp) != 0
+            && fread(&denominator, 1, 4, fp) != 0) {
+        printf("%d/%d\n", numerator, denominator);
+    }
+}
+
 void
 print_ifd_entry(const struct ifd_entry *entry, FILE *fp, int tiff_offset)
 {
@@ -200,6 +218,9 @@ print_ifd_entry(const struct ifd_entry *entry, FILE *fp, int tiff_offset)
         break;
     case 7: /* UNDEFINED */
         print_undefined(fp, entry, tiff_offset);
+        break;
+    case 10: /* SRATIONAL */
+        print_srational(fp, entry, tiff_offset);
         break;
     default:
         printf("Unrecognized data type = %d\n", entry->type);
