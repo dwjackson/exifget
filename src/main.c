@@ -5,10 +5,6 @@
 
 #define USAGE_FMT "Usage: %s [photo_file]\n"
 
-#define MAGIC_NUMBER_LENGTH 4
-#define JPEG_TIFF_OFFSET 12
-#define TIFF_TIFF_OFFSET 0
-
 /*
 void
 print_ifds(const char *file_name);
@@ -92,41 +88,5 @@ print_ifd(FILE *fp, long offset, int tiff_offset)
         }
     }
     free(ifd_entries);
-}
-
-int
-file_tiff_offset(FILE *fp)
-{
-    uint8_t magic[MAGIC_NUMBER_LENGTH];
-    int offset;
-    size_t bytes_read;
-    
-    bytes_read = fread(magic, MAGIC_NUMBER_LENGTH, 1, fp);
-    if (bytes_read == 0) {
-        fprintf(stderr, "ERROR: Could not read magic number\n");
-        abort();
-    }
-    if (magic[0] == 0xFF
-            && magic[1] == 0xD8
-            && magic[2] == 0xFF
-            && magic[3] == 0xE1) {
-        offset = JPEG_TIFF_OFFSET;
-    } else if (magic[0] == 0x49
-            && magic[1] == 0x49
-            && magic[2] == 0x2A
-            && magic[3] == 0x00) {
-        offset = TIFF_TIFF_OFFSET;
-    } else if (magic[0] == 0x4D
-            && magic[1] == 0x4D
-            && magic[2] == 0x00
-            && magic[3] == 0x2A) {
-        offset = TIFF_TIFF_OFFSET;
-    } else {
-        offset = -1;
-    }
-
-    fseek(fp, 0, SEEK_SET);
-
-    return offset;
 }
 */
