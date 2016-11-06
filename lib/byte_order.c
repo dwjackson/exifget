@@ -16,5 +16,11 @@ uint32_t
 swap_btol32(uint32_t data)
 {
     uint32_t swapped_data;
-    /* TODO */
+
+    swapped_data = (data >> 24) & 0x000000FF;
+    swapped_data |= (data >> 8) & 0x0000FF00;
+    swapped_data |= (data << 8) & 0x00FF0000;
+    swapped_data |= (data << 24) & 0xFF000000;
+
+    return swapped_data;
 }

@@ -9,18 +9,80 @@
 #define SHORT_LENGTH 2
 #define LONG_LENGTH 4
 
-void
+static int
+tiff_read_short(const struct exifget_data *data, uint16_t *data_short)
+{
+    uint16_t s;
+
+    if (fread(&s, 1, 2, data->fp) == 0) {
+        return -1;
+    }
+
+    if (data->system_byte_order == EXIFGET_LITTLE_ENDIAN
+            && data->tiff_byte_order == EXIFGET_BIG_ENDIAN) {
+        s = swap_btol16(s);
+    } else if (data->system_byte_order == EXIFGET_BIG_ENDIAN
+            && data->tiff_byte_order == EXIFGET_LITTLE_ENDIAN) {
+        abort(); /* TODO: Implement this */
+    }
+
+    *data_short = s;
+    return 0;
+}
+
+static int
+tiff_read_long(const struct exifget_data *data, uint32_t *data_long)
+{
+    uint32_t l;
+
+    if (fread(&l, 1, 4, data->fp) == 0) {
+        return -1;
+    }
+
+    if (data->system_byte_order == EXIFGET_LITTLE_ENDIAN
+            && data->tiff_byte_order == EXIFGET_BIG_ENDIAN) {
+        l = swap_btol32(l);
+    } else if (data->system_byte_order == EXIFGET_BIG_ENDIAN
+            && data->tiff_byte_order == EXIFGET_LITTLE_ENDIAN) {
+        abort(); /* TODO: Implement this */
+    }
+
+    *data_long = l;
+    return 0;
+}
+
+int
 tiff_read_header(const struct exifget_data *data, struct tiff_header *header)
 {
-    if (fread(header, 1, sizeof(struct tiff_header), data->fp) == 0) {
-        fprintf(stderr, "ERROR: Could not read TIFF header\n");
-        abort();
+    uint16_t data_short;
+    uint32_t data_long;
+    struct exifget_data tmpdata;
+
+    if (fseek(data->fp, data->tiff_offset, SEEK_SET) != 0) {
+        return -1;
     }
-    if (header->magic_number != TIFF_MAGIC_NUMBER) {
-        char err_fmt[] = "ERROR: Bad magic number in TIFF segment: 0x%x\n";
-        fprintf(stderr, err_fmt, header->magic_number);
-        abort();
+    if (fread(&data_short, 1, 2, data->fp) == 0) {
+        return -1;
     }
+    tmpdata = *data;
+    if (data_short == TIFF_BIG_ENDIAN) {
+        tmpdata.tiff_byte_order = EXIFGET_BIG_ENDIAN;
+    } else {
+        tmpdata.tiff_byte_order = EXIFGET_LITTLE_ENDIAN;
+    }
+    header->byte_order = data_short;
+
+    if (tiff_read_short(&tmpdata, &data_short) != 0) {
+        return -1;
+    }
+    header->magic_number = data_short;
+
+    if (tiff_read_long(&tmpdata, &data_long) != 0) {
+        return -1;
+    }
+    header->ifd_offset = data_long;
+
+    return 0;
 }
 
 int

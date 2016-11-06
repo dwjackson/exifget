@@ -26,30 +26,37 @@ exifget_open(const char *file_name, exifget_data_t **data_ptr)
     enum exifget_byte_order system_byte_order;
     int tiff_offset;
     struct tiff_header header;
+    int err;
 
     *data_ptr = malloc(sizeof(struct exifget_data));
     if (*data_ptr == NULL) {
-        return -1;
+        return EXIFGET_ENOMEM;
     }
 
     fp = fopen(file_name, "rb");
     if (fp == NULL) {
-        return -1;
+        return EXIFGET_ECANTOPEN;
     }
     (*data_ptr)->fp = fp;
 
     system_byte_order = get_system_byte_order();
     if (system_byte_order == EXIFGET_UNDEFINED_BYTE_ORDER) {
+        err = EXIFGET_EBYTEORDER;
         goto fatal_error;
     }
+    (*data_ptr)->system_byte_order = system_byte_order;
 
     tiff_offset = file_tiff_offset(fp);
     if (tiff_offset < 0) {
+        err = EXIFGET_EBADOFFSET;
         goto fatal_error;
     }
+    (*data_ptr)->tiff_offset = tiff_offset;
 
     tiff_read_header(*data_ptr, &header);
     if (header.magic_number != TIFF_MAGIC_NUMBER) {
+        printf("[DEBUG] magic number = 0x%x\n", header.magic_number);
+        err = EXIFGET_EBADMAGIC;
         goto fatal_error;
     }
     if (header.byte_order == TIFF_LITTLE_ENDIAN) {
@@ -57,18 +64,19 @@ exifget_open(const char *file_name, exifget_data_t **data_ptr)
     } else if (header.byte_order == TIFF_BIG_ENDIAN) {
         (*data_ptr)->tiff_byte_order = EXIFGET_BIG_ENDIAN;
     } else {
+        err = EXIFGET_EBYTEORDER;
         goto fatal_error;
     }
     (*data_ptr)->next_ifd_offset = header.ifd_offset;
 
-    return 0;
+    return EXIFGET_ENOERR;
 
 fatal_error:
     fclose(fp);
     (*data_ptr)->fp = NULL;
     free(*data_ptr);
 
-    return -1;
+    return err;
 }
 
 static enum exifget_byte_order
@@ -131,4 +139,20 @@ exifget_close(exifget_data_t *data)
 {
     fclose(data->fp);
     free(data);
+}
+
+static const char *exifget_error_messages[] = {
+    "No Error",
+    "Out of memory",
+    "Could not open file",
+    "Unrecognized byte order",
+    "Bad offset",
+    "Bad magic number"
+};
+
+void
+exifget_perror(int err)
+{
+    const char *err_msg = exifget_error_messages[err];
+    fprintf(stderr, "ERROR: %s\n", err_msg);
 }

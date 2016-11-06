@@ -22,7 +22,7 @@ struct ifd_entry {
     uint32_t data_offset;
 };
 
-void
+int
 tiff_read_header(const struct exifget_data *data, struct tiff_header *header);
 
 int
