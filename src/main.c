@@ -1,7 +1,6 @@
 #include "libexifget.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 
 #define USAGE_FMT "Usage: %s [photo_file]\n"
 
@@ -11,9 +10,6 @@ print_ifds(const char *file_name);
 
 void
 print_ifd(FILE *fp, long offset, int tiff_offset);
-
-int
-file_tiff_offset(FILE *fp);
 */
 
 int
@@ -28,7 +24,10 @@ main(int argc, char *argv[])
     }
 
     file_name = argv[1];
-    exifget_open(file_name, &data);
+    if (exifget_open(file_name, &data) != 0) {
+        fprintf(stderr, "ERROR: Could not read picture file: %s\n", file_name);
+        exit(EXIT_FAILURE);
+    }
     /* TODO: print_ifds(file_name); */
     exifget_close(data);
     
