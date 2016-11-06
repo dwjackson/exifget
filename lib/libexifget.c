@@ -1,5 +1,6 @@
 #include "exifget_data.h"
 #include "libexifget.h"
+#include "tiff.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -24,6 +25,7 @@ exifget_open(const char *file_name, exifget_data_t **data_ptr)
     FILE *fp;
     enum exifget_byte_order system_byte_order;
     int tiff_offset;
+    struct tiff_header header;
 
     *data_ptr = malloc(sizeof(struct exifget_data));
     if (*data_ptr == NULL) {
@@ -46,7 +48,18 @@ exifget_open(const char *file_name, exifget_data_t **data_ptr)
         goto fatal_error;
     }
 
-    /* TODO */
+    tiff_read_header(fp, &header);
+    if (header.magic_number != TIFF_MAGIC_NUMBER) {
+        goto fatal_error;
+    }
+    if (header.byte_order == TIFF_LITTLE_ENDIAN) {
+        (*data_ptr)->tiff_byte_order = EXIFGET_LITTLE_ENDIAN;
+    } else if (header.byte_order == TIFF_BIG_ENDIAN) {
+        (*data_ptr)->tiff_byte_order = EXIFGET_BIG_ENDIAN;
+    } else {
+        goto fatal_error;
+    }
+    (*data_ptr)->next_ifd_offset = header.ifd_offset;
 
     return 0;
 
