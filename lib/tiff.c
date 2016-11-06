@@ -1,4 +1,4 @@
-#include "tiff_exif.h"
+#include "tiff.h"
 #include "exif_tags.h"
 #include <stdint.h>
 #include <stdio.h>

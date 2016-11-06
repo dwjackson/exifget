@@ -1,6 +1,4 @@
 #include "libexifget.h"
-#include "tiff_exif.h"
-#include "exif_tags.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -11,6 +9,7 @@
 #define JPEG_TIFF_OFFSET 12
 #define TIFF_TIFF_OFFSET 0
 
+/*
 void
 print_ifds(const char *file_name);
 
@@ -19,6 +18,7 @@ print_ifd(FILE *fp, long offset, int tiff_offset);
 
 int
 file_tiff_offset(FILE *fp);
+*/
 
 int
 main(int argc, char *argv[])
@@ -33,12 +33,13 @@ main(int argc, char *argv[])
 
     file_name = argv[1];
     exifget_open(file_name, &data);
-    print_ifds(file_name);
+    /* TODO: print_ifds(file_name); */
     exifget_close(data);
     
     return 0;
 }
 
+/*
 void
 print_ifds(const char *file_name)
 {
@@ -128,3 +129,4 @@ file_tiff_offset(FILE *fp)
 
     return offset;
 }
+*/
