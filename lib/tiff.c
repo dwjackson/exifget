@@ -1,4 +1,5 @@
 #include "tiff.h"
+#include "exifget_data.h"
 #include "exif_tags.h"
 #include <stdint.h>
 #include <stdio.h>
@@ -9,9 +10,9 @@
 #define LONG_LENGTH 4
 
 void
-tiff_read_header(FILE *fp, struct tiff_header *header)
+tiff_read_header(const struct exifget_data *data, struct tiff_header *header)
 {
-    if (fread(header, 1, sizeof(struct tiff_header), fp) == 0) {
+    if (fread(header, 1, sizeof(struct tiff_header), data->fp) == 0) {
         fprintf(stderr, "ERROR: Could not read TIFF header\n");
         abort();
     }

@@ -1,14 +1,9 @@
 #ifndef EXIFGET_DATA_H
 #define EXIFGET_DATA_H
 
+#include "byte_order.h"
 #include <stdio.h>
 #include <stdint.h>
-
-enum exifget_byte_order {
-    EXIFGET_LITTLE_ENDIAN,
-    EXIFGET_BIG_ENDIAN,
-    EXIFGET_UNDEFINED_BYTE_ORDER
-};
 
 struct exifget_data {
     FILE *fp;

@@ -1,6 +1,7 @@
 #ifndef TIFF_EXIF_H
 #define TIFF_EXIF_H
 
+#include "exifget_data.h"
 #include <stdio.h>
 #include <stdint.h>
 
@@ -22,7 +23,7 @@ struct ifd_entry {
 };
 
 void
-tiff_read_header(FILE *fp, struct tiff_header *header);
+tiff_read_header(const struct exifget_data *data, struct tiff_header *header);
 
 int
 tiff_read_ifd_entries(FILE *fp,

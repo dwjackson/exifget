@@ -48,7 +48,7 @@ exifget_open(const char *file_name, exifget_data_t **data_ptr)
         goto fatal_error;
     }
 
-    tiff_read_header(fp, &header);
+    tiff_read_header(*data_ptr, &header);
     if (header.magic_number != TIFF_MAGIC_NUMBER) {
         goto fatal_error;
     }
