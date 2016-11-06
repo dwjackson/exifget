@@ -5,7 +5,8 @@
 
 enum exifget_byte_order {
     EXIFGET_LITTLE_ENDIAN,
-    EXIFGET_BIG_ENDIAN
+    EXIFGET_BIG_ENDIAN,
+    EXIFGET_UNDEFINED_BYTE_ORDER
 };
 
 struct exifget_data {

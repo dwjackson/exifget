@@ -1,3 +1,4 @@
+#include "libexifget.h"
 #include "tiff_exif.h"
 #include "exif_tags.h"
 #include <stdio.h>
@@ -23,6 +24,7 @@ int
 main(int argc, char *argv[])
 {
     char *file_name;
+    exifget_data_t *data;
 
     if (argc < 2) {
         printf(USAGE_FMT, argv[0]);
@@ -30,7 +32,9 @@ main(int argc, char *argv[])
     }
 
     file_name = argv[1];
+    exifget_open(file_name, &data);
     print_ifds(file_name);
+    exifget_close(data);
     
     return 0;
 }
