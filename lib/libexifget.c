@@ -27,6 +27,8 @@ exifget_open(const char *file_name, exifget_data_t **data_ptr)
     int tiff_offset;
     struct tiff_header header;
     int err;
+    long offset;
+    uint16_t num_ifd_entries;
 
     *data_ptr = malloc(sizeof(struct exifget_data));
     if (*data_ptr == NULL) {
@@ -68,6 +70,16 @@ exifget_open(const char *file_name, exifget_data_t **data_ptr)
         goto fatal_error;
     }
     (*data_ptr)->next_ifd_offset = header.ifd_offset;
+
+    (*data_ptr)->ifd.offset = header.ifd_offset;
+    (*data_ptr)->ifd.current_entry_index = 0;
+    offset = (*data_ptr)->next_ifd_offset + (*data_ptr)->tiff_offset;
+    if (fseek((*data_ptr)->fp, offset, SEEK_SET) != 0) {
+        err = EXIFGET_EOFFSET;
+        goto fatal_error;
+    }
+    tiff_read_short(*data_ptr, &num_ifd_entries);
+    (*data_ptr)->ifd.num_entries = num_ifd_entries;
 
     return EXIFGET_ENOERR;
 
@@ -141,13 +153,54 @@ exifget_close(exifget_data_t *data)
     free(data);
 }
 
+int
+exifget_next_ifd_entry(exifget_data_t *data, struct ifd_entry *entry)
+{
+    struct ifd *ifd;
+    uint16_t tag;
+    uint16_t type;
+    uint32_t count;
+    uint32_t data_offset;
+   
+    ifd = &(data->ifd);
+    if (ifd->current_entry_index >= ifd->num_entries) {
+        return -1;
+    }
+
+    if (tiff_read_short(data, &tag) != 0) {
+        return EXIFGET_EREAD;
+    }
+    entry->tag = tag;
+
+    if (tiff_read_short(data, &type) != 0) {
+        return EXIFGET_EREAD;
+    }
+    entry->type = type;
+
+    if (tiff_read_long(data, &count) != 0) {
+        return EXIFGET_EREAD;
+    }
+    entry->count = count;
+
+    if (tiff_read_long(data, &data_offset) != 0) {
+        return EXIFGET_EREAD;
+    }
+    entry->data_offset = data_offset;
+
+    data->ifd.current_entry_index++;
+
+    return 0;
+}
+
 static const char *exifget_error_messages[] = {
     "No Error",
     "Out of memory",
     "Could not open file",
     "Unrecognized byte order",
     "Bad offset",
-    "Bad magic number"
+    "Bad magic number",
+    "Could not seek to offset",
+    "Could not read from file"
 };
 
 void

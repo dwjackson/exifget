@@ -1,6 +1,7 @@
 #ifndef TIFF_EXIF_H
 #define TIFF_EXIF_H
 
+#include "libexifget.h"
 #include "exifget_data.h"
 #include <stdio.h>
 #include <stdint.h>
@@ -15,22 +16,13 @@ struct tiff_header {
     uint32_t ifd_offset;
 };
 
-struct ifd_entry {
-    uint16_t tag;
-    uint16_t type;
-    uint32_t count;
-    uint32_t data_offset;
-};
+int
+tiff_read_short(const struct exifget_data *data, uint16_t *data_short);
+
+int
+tiff_read_long(const struct exifget_data *data, uint32_t *data_long);
 
 int
 tiff_read_header(const struct exifget_data *data, struct tiff_header *header);
-
-int
-tiff_read_ifd_entries(FILE *fp,
-                      struct ifd_entry **ifd_entries_ptr,
-                      int tiff_offset);
-
-void
-print_ifd_entry(const struct ifd_entry *entry, FILE *fp, int tiff_offset);
 
 #endif /* TIFF_EXIF_H */
