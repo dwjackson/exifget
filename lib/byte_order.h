@@ -12,4 +12,10 @@ enum exifget_byte_order {
 uint16_t
 swap_btol16(uint16_t data);
 
+uint32_t
+swap_btol32(uint32_t data);
+
+double
+swap_btol_double(double data);
+
 #endif /* BYTE_ORDER_H */

@@ -23,6 +23,12 @@ int
 tiff_read_long(const struct exifget_data *data, uint32_t *data_long);
 
 int
+tiff_read_float(const struct exifget_data *data, float *data_float);
+
+int
+tiff_read_double(const struct exifget_data *data, double *data_double);
+
+int
 tiff_read_header(const struct exifget_data *data, struct tiff_header *header);
 
 #endif /* TIFF_EXIF_H */

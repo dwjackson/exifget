@@ -52,6 +52,48 @@ tiff_read_long(const struct exifget_data *data, uint32_t *data_long)
 }
 
 int
+tiff_read_float(const struct exifget_data *data, float *data_float)
+{
+    float f;
+
+    if (fread(&f, 1, 4, data->fp) == 0) {
+        return -1;
+    }
+
+    if (data->system_byte_order == EXIFGET_LITTLE_ENDIAN
+            && data->tiff_byte_order == EXIFGET_BIG_ENDIAN) {
+        f = swap_btol32(f);
+    } else if (data->system_byte_order == EXIFGET_BIG_ENDIAN
+            && data->tiff_byte_order == EXIFGET_LITTLE_ENDIAN) {
+        abort(); /* TODO: Implement this */
+    }
+
+    *data_float = f;
+    return 0;
+}
+
+int
+tiff_read_double(const struct exifget_data *data, double *data_double)
+{
+    double d;
+
+    if (fread(&d, 1, 8, data->fp) == 0) {
+        return -1;
+    }
+
+    if (data->system_byte_order == EXIFGET_LITTLE_ENDIAN
+            && data->tiff_byte_order == EXIFGET_BIG_ENDIAN) {
+        d = swap_btol_double(d);
+    } else if (data->system_byte_order == EXIFGET_BIG_ENDIAN
+            && data->tiff_byte_order == EXIFGET_LITTLE_ENDIAN) {
+        abort(); /* TODO: Implement this */
+    }
+
+    *data_double = d;
+    return 0;
+}
+
+int
 tiff_read_header(const struct exifget_data *data, struct tiff_header *header)
 {
     uint16_t data_short;

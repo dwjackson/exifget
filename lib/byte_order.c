@@ -24,3 +24,25 @@ swap_btol32(uint32_t data)
 
     return swapped_data;
 }
+
+double
+swap_btol_double(double data)
+{
+    uint64_t swapped_data;
+    uint64_t original_data;
+    double *dp;
+
+    original_data = (uint64_t) data;
+
+    swapped_data = (original_data >> 56) & 0x00000000000000FF;
+    swapped_data |= (original_data >> 40) & 0x000000000000FF00;
+    swapped_data |= (original_data >> 24) & 0x0000000000FF0000;
+    swapped_data |= (original_data >> 8) & 0x00000000FF000000;
+    swapped_data |= (original_data << 8) & 0x000000FF00000000;
+    swapped_data |= (original_data << 24) & 0x0000FF0000000000;
+    swapped_data |= (original_data << 40) & 0x00FF000000000000;
+    swapped_data |= (original_data << 56) & 0xFF00000000000000;
+
+    dp = (double *)(&swapped_data);
+    return *dp;
+}

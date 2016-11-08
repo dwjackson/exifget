@@ -25,7 +25,12 @@ main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
     while ((retval = exifget_next_ifd_entry(data, &entry)) == 0) {
+        err = exifget_ifd_entry_data_load(data, &entry);
+        if (err != EXIFGET_ENOERR) {
+            break;
+        }
         /* TODO: print IFDs */
+        exifget_ifd_entry_data_unload(&entry);
     }
     if (retval > 0) {
         err = retval;
