@@ -74,7 +74,6 @@ exifget_open(const char *file_name, exifget_data_t **data_ptr)
 
     tiff_read_header(*data_ptr, &header);
     if (header.magic_number != TIFF_MAGIC_NUMBER) {
-        printf("[DEBUG] magic number = 0x%x\n", header.magic_number);
         err = EXIFGET_EBADMAGIC;
         goto fatal_error;
     }
