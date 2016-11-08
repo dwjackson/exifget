@@ -320,7 +320,7 @@ exifget_ifd_entry_data_unload(struct ifd_entry *entry)
 }
 
 const char
-*exifget_tag_name(exifget_data_t *data, const struct ifd_entry *entry)
+*exifget_tag_name(const exifget_data_t *data, const struct ifd_entry *entry)
 {
     return exif_tag_name_r(entry->tag, data->exif_tags);
 }

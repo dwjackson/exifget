@@ -30,7 +30,7 @@ main(int argc, char *argv[])
         if (err != EXIFGET_ENOERR) {
             break;
         }
-        print_ifd_entry(&entry);
+        print_ifd_entry(data, &entry);
         exifget_ifd_entry_data_unload(&entry);
     }
     if (retval > 0) {
