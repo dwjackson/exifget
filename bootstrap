@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# This script generates the configure script and runs it for different build
+# configurations. It should not need to be run by end-users.
+
+USAGE='Usage: bootstrap {debug|release}'
+
+BUILD_TYPE_DEBUG='debug'
+BUILD_TYPE_RELEASE='release'
+
+if [ $# -lt 1 ]
+then
+    echo $USAGE
+    exit 1
+fi
+
+if [ "$1" != "$BUILD_TYPE_DEBUG" -a "$1" != "$BUILD_TYPE_RELEASE" ]
+then
+    echo $USAGE
+    exit 1
+fi
+
+autoreconf -iv
+
+build_type=$1
+shift 1
+if [ "$build_type" = "$BUILD_TYPE_RELEASE" ]
+then
+    ./configure $@
+else
+    ./configure CPPFLAGS='-g -O0 -DDEBUG' $@
+fi
