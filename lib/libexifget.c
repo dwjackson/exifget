@@ -27,6 +27,10 @@ seek_to_ifd(exifget_data_t *data, long offset)
 
     err = EXIFGET_ENOERR;
     if (fseek(data->fp, offset, SEEK_SET) != 0) {
+#ifdef DEBUG
+        fprintf(stderr, "ERROR: Bad offset 0x%x\n", offset);
+        abort();
+#endif /* DEBUG */
         return EXIFGET_EOFFSET;
     }
     tiff_read_short(data, &num_ifd_entries);
@@ -184,21 +188,37 @@ exifget_next_ifd_entry(exifget_data_t *data, struct ifd_entry *entry)
     }
 
     if (tiff_read_short(data, &tag) != 0) {
+#ifdef DEBUG
+        fprintf(stderr, "Could not read tag\n");
+        abort();
+#endif /* DEBUG */
         return EXIFGET_EREAD;
     }
     entry->tag = tag;
 
     if (tiff_read_short(data, &type) != 0) {
+#ifdef DEBUG
+        fprintf(stderr, "Could not read type\n");
+        abort();
+#endif /* DEBUG */
         return EXIFGET_EREAD;
     }
     entry->type = type;
 
     if (tiff_read_long(data, &count) != 0) {
+#ifdef DEBUG
+        fprintf(stderr, "Could not read count\n");
+        abort();
+#endif /* DEBUG */
         return EXIFGET_EREAD;
     }
     entry->count = count;
 
     if (tiff_read_long(data, &data_offset) != 0) {
+#ifdef DEBUG
+        fprintf(stderr, "Could not read data offset\n");
+        abort();
+#endif /* DEBUG */
         return EXIFGET_EREAD;
     }
     entry->data_offset = data_offset;
@@ -231,6 +251,10 @@ exifget_ifd_entry_data_load(exifget_data_t *data, struct ifd_entry *entry)
     switch(entry->type) {
     case EXIFGET_IFD_ENTRY_DATA_TYPE_BYTE:
         if (fread(&(entry->data.data_byte), 1, 1, data->fp) == 0) {
+#ifdef DEBUG
+            fprintf(stderr, "Could not read byte data\n");
+            abort();
+#endif /* DEBUG */
             err = EXIFGET_EREAD;
         }
         break;
@@ -271,11 +295,19 @@ exifget_ifd_entry_data_load(exifget_data_t *data, struct ifd_entry *entry)
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SBYTE:
         if (fread(&(entry->data.data_sbyte), 1, 1, data->fp) == 0) {
+#ifdef DEBUG
+            fprintf(stderr, "Could not read sbyte data\n");
+            abort();
+#endif /* DEBUG */
             err = EXIFGET_EREAD;
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_UNDEFINED:
         if (fread(&(entry->data.data_undefined), 1, 1, data->fp) == 0) {
+#ifdef DEBUG
+            fprintf(stderr, "Could not read undefined data\n");
+            abort();
+#endif /* DEBUG */
             err = EXIFGET_EREAD;
         }
         break;
