@@ -19,6 +19,23 @@ file_tiff_offset(FILE *fp);
 static enum exifget_byte_order
 get_system_byte_order();
 
+static int 
+seek_to_ifd(exifget_data_t *data, long offset)
+{
+    int err;
+    uint16_t num_ifd_entries;
+
+    err = EXIFGET_ENOERR;
+    if (fseek(data->fp, offset, SEEK_SET) != 0) {
+        return EXIFGET_EOFFSET;
+    }
+    tiff_read_short(data, &num_ifd_entries);
+    data->ifd.num_entries = num_ifd_entries;
+    data->ifd.current_entry_index = 0;
+
+    return err;
+}
+
 int
 exifget_open(const char *file_name, exifget_data_t **data_ptr)
 {
@@ -72,14 +89,11 @@ exifget_open(const char *file_name, exifget_data_t **data_ptr)
     (*data_ptr)->next_ifd_offset = header.ifd_offset;
 
     (*data_ptr)->ifd.offset = header.ifd_offset;
-    (*data_ptr)->ifd.current_entry_index = 0;
     offset = (*data_ptr)->next_ifd_offset + (*data_ptr)->tiff_offset;
-    if (fseek((*data_ptr)->fp, offset, SEEK_SET) != 0) {
-        err = EXIFGET_EOFFSET;
+    err = seek_to_ifd(*data_ptr, offset);
+    if (err != EXIFGET_ENOERR) {
         goto fatal_error;
     }
-    tiff_read_short(*data_ptr, &num_ifd_entries);
-    (*data_ptr)->ifd.num_entries = num_ifd_entries;
 
     exif_tags_array_init(&((*data_ptr)->exif_tags));
 
@@ -192,6 +206,10 @@ exifget_next_ifd_entry(exifget_data_t *data, struct ifd_entry *entry)
     entry->data.data_ascii= NULL;
 
     data->ifd.current_entry_index++;
+
+    if (entry->tag == EXIF_TAG_EXIF_IFD) {
+        seek_to_ifd(data, entry->data_offset);
+    }
 
     return 0;
 }
