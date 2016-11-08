@@ -81,6 +81,8 @@ exifget_open(const char *file_name, exifget_data_t **data_ptr)
     tiff_read_short(*data_ptr, &num_ifd_entries);
     (*data_ptr)->ifd.num_entries = num_ifd_entries;
 
+    exif_tags_array_init(&((*data_ptr)->exif_tags));
+
     return EXIFGET_ENOERR;
 
 fatal_error:
@@ -150,6 +152,7 @@ void
 exifget_close(exifget_data_t *data)
 {
     fclose(data->fp);
+    free(data->exif_tags);
     free(data);
 }
 
@@ -314,6 +317,12 @@ exifget_ifd_entry_data_unload(struct ifd_entry *entry)
         free(entry->data.data_ascii);
     }
     entry->data.data_ascii = NULL;
+}
+
+const char
+*exifget_tag_name(exifget_data_t *data, const struct ifd_entry *entry)
+{
+    return exif_tag_name_r(entry->tag, data->exif_tags);
 }
 
 static const char *exifget_error_messages[] = {

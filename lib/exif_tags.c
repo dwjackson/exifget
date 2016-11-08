@@ -85,8 +85,6 @@ exif_tags_array_init(struct exif_tag **exif_tags_ptr)
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_EXPOSURE_MODE, "ExposureMode");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_WHITE_BALANCE, "WhiteBalance");
     exif_tag_init(*exif_tags_ptr, EXIF_TAG_SCENE_CAPTURE_TYPE, "SceneCaptureType");
-
-    /* TODO */
 }
 
 char

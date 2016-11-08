@@ -67,6 +67,9 @@ exifget_ifd_entry_data_load(exifget_data_t *data, struct ifd_entry *entry);
 void
 exifget_ifd_entry_data_unload(struct ifd_entry *entry);
 
+const char
+*exifget_tag_name(exifget_data_t *data, const struct ifd_entry *entry);
+
 #define EXIFGET_ENOERR 0
 #define EXIFGET_ENOMEM 1
 #define EXIFGET_ECANTOPEN 2

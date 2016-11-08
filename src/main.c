@@ -1,4 +1,5 @@
 #include "libexifget.h"
+#include "exif_print.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -29,7 +30,7 @@ main(int argc, char *argv[])
         if (err != EXIFGET_ENOERR) {
             break;
         }
-        /* TODO: print IFDs */
+        print_ifd_entry(&entry);
         exifget_ifd_entry_data_unload(&entry);
     }
     if (retval > 0) {
