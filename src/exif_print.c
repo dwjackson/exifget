@@ -2,7 +2,7 @@
 #include <stdio.h>
     
 void
-print_ifd_entry(const struct exifget_ifd_entry *entry)
+print_ifd_entry(const struct ifd_entry *entry)
 {
     char *tag_name;
 
