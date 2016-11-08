@@ -304,11 +304,15 @@ exifget_ifd_entry_data_load(exifget_data_t *data, struct ifd_entry *entry)
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_UNDEFINED:
         if (fread(&(entry->data.data_undefined), 1, 1, data->fp) == 0) {
+            if (ferror(data->fp)) {
 #ifdef DEBUG
-            fprintf(stderr, "Could not read undefined data\n");
-            abort();
+                perror(NULL);
+                fprintf(stderr, "Could not read undefined data\n");
+                perror(NULL);
+                abort();
 #endif /* DEBUG */
-            err = EXIFGET_EREAD;
+                err = EXIFGET_EREAD;
+            }
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SSHORT:
