@@ -28,7 +28,7 @@ seek_to_ifd(exifget_data_t *data, long offset)
     err = EXIFGET_ENOERR;
     if (fseek(data->fp, offset, SEEK_SET) != 0) {
 #ifdef DEBUG
-        fprintf(stderr, "ERROR: Bad offset 0x%x\n", offset);
+        fprintf(stderr, "ERROR: Bad offset 0x%lx\n", offset);
         abort();
 #endif /* DEBUG */
         return EXIFGET_EOFFSET;
@@ -180,7 +180,7 @@ exifget_next_ifd_entry(exifget_data_t *data, struct ifd_entry *entry)
     uint16_t tag;
     uint16_t type;
     uint32_t count;
-    uint32_t data_offset;
+    uint32_t value_offset;
    
     ifd = &(data->ifd);
     if (ifd->current_entry_index >= ifd->num_entries) {
@@ -214,20 +214,20 @@ exifget_next_ifd_entry(exifget_data_t *data, struct ifd_entry *entry)
     }
     entry->count = count;
 
-    if (tiff_read_long(data, &data_offset) != 0) {
+    if (tiff_read_long(data, &value_offset) != 0) {
 #ifdef DEBUG
         fprintf(stderr, "Could not read data offset\n");
         abort();
 #endif /* DEBUG */
         return EXIFGET_EREAD;
     }
-    entry->data_offset = data_offset;
-    entry->data.data_ascii= NULL;
+    entry->value_offset = value_offset;
+    entry->value.value_ascii= NULL;
 
     data->ifd.current_entry_index++;
 
     if (entry->tag == EXIF_TAG_EXIF_IFD) {
-        seek_to_ifd(data, entry->data_offset);
+        seek_to_ifd(data, entry->value_offset);
     }
 
     return 0;
@@ -240,61 +240,63 @@ exifget_ifd_entry_data_load(exifget_data_t *data, struct ifd_entry *entry)
     long data_offset;
     int err;
     int ret;
-    size_t ascii_data_bufsize;
+    size_t ascii_value_bufsize;
 
     err = EXIFGET_ENOERR;
 
     current_offset = ftell(data->fp);
-    data_offset = data->tiff_offset + entry->data_offset;
+    data_offset = data->tiff_offset + entry->value_offset;
     fseek(data->fp, data_offset, SEEK_SET);
 
     switch(entry->type) {
     case EXIFGET_IFD_ENTRY_DATA_TYPE_BYTE:
-        if (fread(&(entry->data.data_byte), 1, 1, data->fp) == 0) {
+        if (fread(&(entry->value.value_byte), 1, 1, data->fp) == 0) {
+            if (ferror(data->fp)) {
 #ifdef DEBUG
-            fprintf(stderr, "Could not read byte data\n");
-            abort();
+                fprintf(stderr, "Could not read byte data\n");
+                abort();
 #endif /* DEBUG */
-            err = EXIFGET_EREAD;
+                err = EXIFGET_EREAD;
+            }
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_ASCII:
-        ascii_data_bufsize = entry->count;
-        entry->data.data_ascii = malloc(ascii_data_bufsize);
-        ret = fread(entry->data.data_ascii, ascii_data_bufsize, 1, data->fp);
+        ascii_value_bufsize = entry->count;
+        entry->value.value_ascii = malloc(ascii_value_bufsize);
+        ret = fread(entry->value.value_ascii, ascii_value_bufsize, 1, data->fp);
         if (ret == 0) {
-            free(entry->data.data_ascii);
+            free(entry->value.value_ascii);
             err = ret;
             goto done;
         }
-        (entry->data.data_ascii)[ascii_data_bufsize - 1] = '\0';
+        (entry->value.value_ascii)[ascii_value_bufsize - 1] = '\0';
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SHORT:
-        ret = tiff_read_short(data, &(entry->data.data_short));
+        ret = tiff_read_short(data, &(entry->value.value_short));
         if (ret != 0) {
             err = ret;
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_LONG:
-        ret = tiff_read_long(data, &(entry->data.data_long));
+        ret = tiff_read_long(data, &(entry->value.value_long));
         if (ret != 0) {
             err = ret;
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_RATIONAL:
-        ret = tiff_read_long(data, &(entry->data.data_rational.numerator));
+        ret = tiff_read_long(data, &(entry->value.value_rational.numerator));
         if (ret != 0) {
             err = ret;
             goto done;
         }
-        ret = tiff_read_long(data, &(entry->data.data_rational.denominator));
+        ret = tiff_read_long(data, &(entry->value.value_rational.denominator));
         if (ret != 0) {
             err = ret;
             goto done;
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SBYTE:
-        if (fread(&(entry->data.data_sbyte), 1, 1, data->fp) == 0) {
+        if (fread(&(entry->value.value_sbyte), 1, 1, data->fp) == 0) {
 #ifdef DEBUG
             fprintf(stderr, "Could not read sbyte data\n");
             abort();
@@ -303,7 +305,7 @@ exifget_ifd_entry_data_load(exifget_data_t *data, struct ifd_entry *entry)
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_UNDEFINED:
-        if (fread(&(entry->data.data_undefined), 1, 1, data->fp) == 0) {
+        if (fread(&(entry->value.value_undefined), 1, 1, data->fp) == 0) {
             if (ferror(data->fp)) {
 #ifdef DEBUG
                 perror(NULL);
@@ -316,38 +318,38 @@ exifget_ifd_entry_data_load(exifget_data_t *data, struct ifd_entry *entry)
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SSHORT:
-        ret = tiff_read_short(data, &(entry->data.data_sshort));
+        ret = tiff_read_short(data, &(entry->value.value_sshort));
         if (ret != 0) {
             err = ret;
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SLONG:
-        ret = tiff_read_long(data, &(entry->data.data_slong));
+        ret = tiff_read_long(data, &(entry->value.value_slong));
         if (ret != 0) {
             err = ret;
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SRATIONAL:
-        ret = tiff_read_long(data, &(entry->data.data_srational.numerator));
+        ret = tiff_read_long(data, &(entry->value.value_srational.numerator));
         if (ret != 0) {
             err = ret;
             goto done;
         }
-        ret = tiff_read_long(data, &(entry->data.data_srational.denominator));
+        ret = tiff_read_long(data, &(entry->value.value_srational.denominator));
         if (ret != 0) {
             err = ret;
             goto done;
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_FLOAT:
-        ret = tiff_read_float(data, &(entry->data.data_float));
+        ret = tiff_read_float(data, &(entry->value.value_float));
         if (ret != 0) {
             err = ret;
             goto done;
         }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_DOUBLE:
-        ret = tiff_read_double(data, &(entry->data.data_double));
+        ret = tiff_read_double(data, &(entry->value.value_double));
         if (ret != 0) {
             err = ret;
             goto done;
@@ -367,9 +369,9 @@ void
 exifget_ifd_entry_data_unload(struct ifd_entry *entry)
 {
     if (entry->type == EXIFGET_IFD_ENTRY_DATA_TYPE_ASCII) {
-        free(entry->data.data_ascii);
+        free(entry->value.value_ascii);
     }
-    entry->data.data_ascii = NULL;
+    entry->value.value_ascii = NULL;
 }
 
 const char

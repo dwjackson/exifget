@@ -17,44 +17,44 @@ print_ifd_entry(const exifget_data_t *data, const struct ifd_entry *entry)
 
     switch(entry->type) {
     case EXIFGET_IFD_ENTRY_DATA_TYPE_BYTE:
-        printf("0x%x\n", entry->data.data_byte);
+        printf("0x%x\n", entry->value.value_byte);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_ASCII:
-        printf("%s\n", entry->data.data_ascii);
+        printf("%s\n", entry->value.value_ascii);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SHORT:
-        printf("%hu\n", entry->data.data_short);
+        printf("%hu\n", entry->value.value_short);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_LONG:
-        printf("%u\n", entry->data.data_long);
+        printf("%u\n", entry->value.value_long);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_RATIONAL:
         printf("%u/%u\n",
-               entry->data.data_rational.numerator,
-               entry->data.data_rational.denominator);
+               entry->value.value_rational.numerator,
+               entry->value.value_rational.denominator);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SBYTE:
-        printf("%hhd\n", entry->data.data_sbyte);
+        printf("%hhd\n", entry->value.value_sbyte);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_UNDEFINED:
-        printf("0x%X\n", entry->data.data_byte);
+        printf("0x%X\n", entry->value.value_byte);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SSHORT:
-        printf("%hd\n", entry->data.data_sshort);
+        printf("%hd\n", entry->value.value_sshort);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SLONG:
-        printf("%d\n", entry->data.data_slong);
+        printf("%d\n", entry->value.value_slong);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SRATIONAL:
         printf("%d/%d\n",
-               entry->data.data_srational.numerator,
-               entry->data.data_srational.denominator);
+               entry->value.value_srational.numerator,
+               entry->value.value_srational.denominator);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_FLOAT:
-        printf("%f\n", entry->data.data_float);
+        printf("%f\n", entry->value.value_float);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_DOUBLE:
-        printf("%lf\n", entry->data.data_double);
+        printf("%lf\n", entry->value.value_double);
         break;
     default:
         printf("\n");

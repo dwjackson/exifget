@@ -14,7 +14,7 @@ tiff_read_short(const struct exifget_data *data, uint16_t *data_short)
 {
     uint16_t s;
 
-    if (fread(&s, 1, 2, data->fp) == 0) {
+    if (fread(&s, 2, 1, data->fp) == 0) {
         return -1;
     }
 
@@ -35,7 +35,7 @@ tiff_read_long(const struct exifget_data *data, uint32_t *data_long)
 {
     uint32_t l;
 
-    if (fread(&l, 1, 4, data->fp) == 0) {
+    if (fread(&l, 4, 1, data->fp) == 0) {
         return -1;
     }
 
@@ -56,7 +56,7 @@ tiff_read_float(const struct exifget_data *data, float *data_float)
 {
     float f;
 
-    if (fread(&f, 1, 4, data->fp) == 0) {
+    if (fread(&f, 4, 1, data->fp) == 0) {
         return -1;
     }
 
@@ -77,7 +77,7 @@ tiff_read_double(const struct exifget_data *data, double *data_double)
 {
     double d;
 
-    if (fread(&d, 1, 8, data->fp) == 0) {
+    if (fread(&d, 8, 1, data->fp) == 0) {
         return -1;
     }
 
@@ -103,7 +103,7 @@ tiff_read_header(const struct exifget_data *data, struct tiff_header *header)
     if (fseek(data->fp, data->tiff_offset, SEEK_SET) != 0) {
         return -1;
     }
-    if (fread(&data_short, 1, 2, data->fp) == 0) {
+    if (fread(&data_short, 2, 1, data->fp) == 0) {
         return -1;
     }
     tmpdata = *data;

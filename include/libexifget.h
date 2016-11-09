@@ -19,37 +19,37 @@
 struct exifget_data;
 typedef struct exifget_data exifget_data_t;
 
-struct ifd_entry_data_rational {
+struct ifd_entry_value_rational {
     uint32_t numerator;
     uint32_t denominator;
 };
 
-struct ifd_entry_data_srational {
+struct ifd_entry_value_srational {
     int32_t numerator;
     int32_t denominator;
 };
 
-union ifd_entry_data {
-    uint8_t data_byte;
-    uint16_t data_short;
-    uint32_t data_long;
-    char *data_ascii;
-    struct ifd_entry_data_rational data_rational;
-    int8_t data_sbyte;
-    uint8_t data_undefined;
-    int16_t data_sshort;
-    int32_t data_slong;
-    struct ifd_entry_data_srational data_srational;
-    float data_float;
-    double data_double;
+union ifd_entry_value {
+    uint8_t value_byte;
+    uint16_t value_short;
+    uint32_t value_long;
+    char *value_ascii;
+    struct ifd_entry_value_rational value_rational;
+    int8_t value_sbyte;
+    uint8_t value_undefined;
+    int16_t value_sshort;
+    int32_t value_slong;
+    struct ifd_entry_value_srational value_srational;
+    float value_float;
+    double value_double;
 };
 
 struct ifd_entry {
     uint16_t tag;
     uint16_t type;
     uint32_t count;
-    uint32_t data_offset;
-    union ifd_entry_data data;
+    uint32_t value_offset;
+    union ifd_entry_value value;
 };
 
 int
