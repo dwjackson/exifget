@@ -13,6 +13,10 @@
 #define MAGIC_NUMBER_LENGTH 4
 #define JPEG_TIFF_OFFSET 12
 #define TIFF_TIFF_OFFSET 0
+
+#define BYTES_PER_TAG 2
+#define BYTES_PER_TYPE 2
+#define BYTES_PER_COUNT 4
 #define BYTES_PER_VALUE_OFFSET 4
 
 static int
@@ -291,8 +295,10 @@ exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
     if (entry_value_size(entry) > BYTES_PER_VALUE_OFFSET) {
         data_offset = data->tiff_offset + entry->value_offset;
     } else {
-        /* TODO */
-        abort();
+        data_offset = current_offset
+            + BYTES_PER_TAG
+            + BYTES_PER_TYPE
+            + BYTES_PER_COUNT;
     }
     fseek(data->fp, data_offset, SEEK_SET);
 
