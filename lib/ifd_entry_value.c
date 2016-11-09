@@ -79,3 +79,24 @@ ifd_entry_value_load_rational(exifget_data_t *data, struct ifd_entry *entry)
 done:
     return err;
 }
+
+int
+ifd_entry_value_load_sbyte(exifget_data_t *data, struct ifd_entry *entry)
+{
+    int err;
+
+    err = EXIFGET_ENOERR;
+    if (fread(&(entry->value.value_sbyte), 1, 1, data->fp) == 0) {
+#ifdef DEBUG
+        if (ferror(data->fp)) {
+            fprintf(stderr, "Could not read sbyte data\n");
+        } else if (feof(data->fp)) {
+            fprintf(stderr, "Could not read sbyte data, unexpected EOF\n");
+        }
+        abort();
+#endif /* DEBUG */
+        err = EXIFGET_EREAD;
+    }
+
+    return err;
+}
