@@ -1,6 +1,7 @@
 #include "exifget_data.h"
 #include "libexifget.h"
 #include "tiff.h"
+#include "ifd_entry_value.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -12,6 +13,7 @@
 #define MAGIC_NUMBER_LENGTH 4
 #define JPEG_TIFF_OFFSET 12
 #define TIFF_TIFF_OFFSET 0
+#define BYTES_PER_VALUE_OFFSET 4
 
 static int
 file_tiff_offset(FILE *fp);
@@ -138,8 +140,11 @@ file_tiff_offset(FILE *fp)
     
     bytes_read = fread(magic, MAGIC_NUMBER_LENGTH, 1, fp);
     if (bytes_read == 0) {
+#ifdef DEBUG
         fprintf(stderr, "ERROR: Could not read magic number\n");
         abort();
+#endif /* DEBUG */
+        return EXIFGET_EREAD;
     }
     if (magic[0] == 0xFF
             && magic[1] == 0xD8
@@ -233,6 +238,46 @@ exifget_next_ifd_entry(exifget_data_t *data, struct ifd_entry *entry)
     return 0;
 }
 
+static size_t
+entry_value_size(const struct ifd_entry *entry)
+{
+    size_t value_size;
+    size_t total_size;
+
+    switch (entry->type) {
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_BYTE:
+        value_size = 1;
+        break;
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_ASCII:
+        value_size = 1;
+        break;
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_SHORT:
+        value_size = 2;
+        break;
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_LONG:
+        value_size = 4;
+        break;
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_RATIONAL:
+        value_size = 8;
+        break;
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_UNDEFINED:
+        value_size = 1;
+        break;
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_SLONG:
+        value_size = 4;
+        break;
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_SRATIONAL:
+        value_size = 8;
+        break;
+    default:
+        value_size = 0;
+        break;
+    }
+
+    total_size = value_size * entry->count;
+    return total_size;
+}
+
 int
 exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
 {
@@ -243,7 +288,12 @@ exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
     err = EXIFGET_ENOERR;
 
     current_offset = ftell(data->fp);
-    data_offset = data->tiff_offset + entry->value_offset;
+    if (entry_value_size(entry) > BYTES_PER_VALUE_OFFSET) {
+        data_offset = data->tiff_offset + entry->value_offset;
+    } else {
+        /* TODO */
+        abort();
+    }
     fseek(data->fp, data_offset, SEEK_SET);
 
     switch(entry->type) {

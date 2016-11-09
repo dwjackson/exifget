@@ -1,5 +1,6 @@
 #include "libexifget.h"
 #include "exifget_data.h"
+#include "tiff.h"
 #include <stdio.h>
 #include <stdlib.h>
     
