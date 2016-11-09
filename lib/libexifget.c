@@ -234,7 +234,7 @@ exifget_next_ifd_entry(exifget_data_t *data, struct ifd_entry *entry)
 }
 
 int
-exifget_ifd_entry_data_load(exifget_data_t *data, struct ifd_entry *entry)
+exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
 {
     long current_offset;
     long data_offset;
@@ -250,15 +250,7 @@ exifget_ifd_entry_data_load(exifget_data_t *data, struct ifd_entry *entry)
 
     switch(entry->type) {
     case EXIFGET_IFD_ENTRY_DATA_TYPE_BYTE:
-        if (fread(&(entry->value.value_byte), 1, 1, data->fp) == 0) {
-            if (ferror(data->fp)) {
-#ifdef DEBUG
-                fprintf(stderr, "Could not read byte data\n");
-                abort();
-#endif /* DEBUG */
-                err = EXIFGET_EREAD;
-            }
-        }
+        err = ifd_entry_value_read_byte(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_ASCII:
         ascii_value_bufsize = entry->count;
@@ -366,7 +358,7 @@ done:
 }
 
 void
-exifget_ifd_entry_data_unload(struct ifd_entry *entry)
+exifget_ifd_entry_value_unload(struct ifd_entry *entry)
 {
     if (entry->type == EXIFGET_IFD_ENTRY_DATA_TYPE_ASCII) {
         free(entry->value.value_ascii);

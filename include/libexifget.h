@@ -62,10 +62,10 @@ int
 exifget_next_ifd_entry(exifget_data_t *data, struct ifd_entry *entry);
 
 int
-exifget_ifd_entry_data_load(exifget_data_t *data, struct ifd_entry *entry);
+exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry);
 
 void
-exifget_ifd_entry_data_unload(struct ifd_entry *entry);
+exifget_ifd_entry_value_unload(struct ifd_entry *entry);
 
 const char
 *exifget_tag_name(const exifget_data_t *data, const struct ifd_entry *entry);
