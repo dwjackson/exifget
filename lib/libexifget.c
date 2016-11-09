@@ -250,18 +250,10 @@ exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
 
     switch(entry->type) {
     case EXIFGET_IFD_ENTRY_DATA_TYPE_BYTE:
-        err = ifd_entry_value_read_byte(data, entry);
+        err = ifd_entry_value_load_byte(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_ASCII:
-        ascii_value_bufsize = entry->count;
-        entry->value.value_ascii = malloc(ascii_value_bufsize);
-        ret = fread(entry->value.value_ascii, ascii_value_bufsize, 1, data->fp);
-        if (ret == 0) {
-            free(entry->value.value_ascii);
-            err = ret;
-            goto done;
-        }
-        (entry->value.value_ascii)[ascii_value_bufsize - 1] = '\0';
+        err = ifd_entry_value_load_ascii(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SHORT:
         ret = tiff_read_short(data, &(entry->value.value_short));
