@@ -41,3 +41,11 @@ ifd_entry_value_load_ascii(exifget_data_t *data, struct ifd_entry *entry)
     
     return err;
 }
+
+int
+ifd_entry_value_load_short(exifget_data_t *data, struct ifd_entry *entry)
+{
+    int err;
+    err = tiff_read_short(data, &(entry->value.value_short));
+    return err;
+}

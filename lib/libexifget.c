@@ -256,10 +256,7 @@ exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
         err = ifd_entry_value_load_ascii(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SHORT:
-        ret = tiff_read_short(data, &(entry->value.value_short));
-        if (ret != 0) {
-            err = ret;
-        }
+        ifd_entry_value_load_short(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_LONG:
         ret = tiff_read_long(data, &(entry->value.value_long));
