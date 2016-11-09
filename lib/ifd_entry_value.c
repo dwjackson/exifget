@@ -119,3 +119,54 @@ ifd_entry_value_load_undefined(exifget_data_t *data, struct ifd_entry *entry)
     }
     return err;
 }
+
+int
+ifd_entry_value_load_sshort(exifget_data_t *data, struct ifd_entry *entry)
+{
+    int err;
+    err = tiff_read_short(data, &(entry->value.value_sshort));
+    return err;
+}
+
+int
+ifd_entry_value_load_slong(exifget_data_t *data, struct ifd_entry *entry)
+{
+    int err;
+    err = tiff_read_long(data, &(entry->value.value_slong));
+    return err;
+}
+
+int
+ifd_entry_value_load_srational(exifget_data_t *data, struct ifd_entry *entry)
+{
+    int ret;
+    int err;
+
+    err = EXIFGET_ENOERR;
+    ret = tiff_read_long(data, &(entry->value.value_srational.numerator));
+    if (ret != 0) {
+        err = ret;
+    } else {
+        ret = tiff_read_long(data, &(entry->value.value_srational.denominator));
+        if (ret != 0) {
+            err = ret;
+        }
+    }
+    return err;
+}
+
+int
+ifd_entry_value_load_float(exifget_data_t *data, struct ifd_entry *entry)
+{
+    int err;
+    err = tiff_read_float(data, &(entry->value.value_float));
+    return err;
+}
+
+int
+ifd_entry_value_load_double(exifget_data_t *data, struct ifd_entry *entry)
+{
+    int err;
+    err = tiff_read_double(data, &(entry->value.value_double));
+    return err;
+}

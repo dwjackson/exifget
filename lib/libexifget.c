@@ -239,8 +239,6 @@ exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
     long current_offset;
     long data_offset;
     int err;
-    int ret;
-    size_t ascii_value_bufsize;
 
     err = EXIFGET_ENOERR;
 
@@ -271,42 +269,19 @@ exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
         err = ifd_entry_value_load_undefined(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SSHORT:
-        ret = tiff_read_short(data, &(entry->value.value_sshort));
-        if (ret != 0) {
-            err = ret;
-        }
+        err = ifd_entry_value_load_sshort(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SLONG:
-        ret = tiff_read_long(data, &(entry->value.value_slong));
-        if (ret != 0) {
-            err = ret;
-        }
+        err = ifd_entry_value_load_slong(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SRATIONAL:
-        ret = tiff_read_long(data, &(entry->value.value_srational.numerator));
-        if (ret != 0) {
-            err = ret;
-            goto done;
-        }
-        ret = tiff_read_long(data, &(entry->value.value_srational.denominator));
-        if (ret != 0) {
-            err = ret;
-            goto done;
-        }
+        err = ifd_entry_value_load_srational(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_FLOAT:
-        ret = tiff_read_float(data, &(entry->value.value_float));
-        if (ret != 0) {
-            err = ret;
-            goto done;
-        }
+        err = ifd_entry_value_load_float(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_DOUBLE:
-        ret = tiff_read_double(data, &(entry->value.value_double));
-        if (ret != 0) {
-            err = ret;
-            goto done;
-        }
+        err = ifd_entry_value_load_double(data, entry);
         break;
     default:
         err = EXIFGET_EDATATYPE;
