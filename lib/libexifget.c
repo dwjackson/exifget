@@ -268,17 +268,7 @@ exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
         err = ifd_entry_value_load_sbyte(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_UNDEFINED:
-        if (fread(&(entry->value.value_undefined), 1, 1, data->fp) == 0) {
-            if (ferror(data->fp)) {
-#ifdef DEBUG
-                perror(NULL);
-                fprintf(stderr, "Could not read undefined data\n");
-                perror(NULL);
-                abort();
-#endif /* DEBUG */
-                err = EXIFGET_EREAD;
-            }
-        }
+        err = ifd_entry_value_load_undefined(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SSHORT:
         ret = tiff_read_short(data, &(entry->value.value_sshort));

@@ -100,3 +100,22 @@ ifd_entry_value_load_sbyte(exifget_data_t *data, struct ifd_entry *entry)
 
     return err;
 }
+
+int
+ifd_entry_value_load_undefined(exifget_data_t *data, struct ifd_entry *entry)
+{
+    int err;
+    err = EXIFGET_ENOERR;
+    if (fread(&(entry->value.value_undefined), 1, 1, data->fp) == 0) {
+        if (ferror(data->fp)) {
+#ifdef DEBUG
+            perror(NULL);
+            fprintf(stderr, "Could not read undefined data\n");
+            perror(NULL);
+            abort();
+#endif /* DEBUG */
+            err = EXIFGET_EREAD;
+        }
+    }
+    return err;
+}
