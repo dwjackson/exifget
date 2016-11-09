@@ -58,3 +58,24 @@ ifd_entry_value_load_long(exifget_data_t *data, struct ifd_entry *entry)
     return err;
 }
 
+int
+ifd_entry_value_load_rational(exifget_data_t *data, struct ifd_entry *entry)
+{
+    int ret;
+    int err;
+
+    err = EXIFGET_ENOERR;
+    ret = tiff_read_long(data, &(entry->value.value_rational.numerator));
+    if (ret != 0) {
+        err = ret;
+        goto done;
+    } else {
+        ret = tiff_read_long(data, &(entry->value.value_rational.denominator));
+        if (ret != 0) {
+            err = ret;
+        }
+    }
+
+done:
+    return err;
+}

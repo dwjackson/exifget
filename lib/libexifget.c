@@ -262,16 +262,7 @@ exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
         err = ifd_entry_value_load_long(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_RATIONAL:
-        ret = tiff_read_long(data, &(entry->value.value_rational.numerator));
-        if (ret != 0) {
-            err = ret;
-            goto done;
-        }
-        ret = tiff_read_long(data, &(entry->value.value_rational.denominator));
-        if (ret != 0) {
-            err = ret;
-            goto done;
-        }
+        err = ifd_entry_value_load_rational(data, entry);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SBYTE:
         if (fread(&(entry->value.value_sbyte), 1, 1, data->fp) == 0) {
