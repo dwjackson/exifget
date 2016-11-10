@@ -236,7 +236,7 @@ exifget_next_ifd_entry(exifget_data_t *data, struct ifd_entry *entry)
     data->ifd.current_entry_index++;
 
     if (entry->tag == EXIF_TAG_EXIF_IFD) {
-        seek_to_ifd(data, entry->value_offset);
+        seek_to_ifd(data, entry->value_offset + data->tiff_offset);
     }
 
     return 0;
