@@ -36,7 +36,7 @@ union ifd_entry_value {
     char *value_ascii;
     struct ifd_entry_value_rational value_rational;
     int8_t value_sbyte;
-    uint8_t value_undefined;
+    uint8_t *value_undefined;
     int16_t value_sshort;
     int32_t value_slong;
     struct ifd_entry_value_srational value_srational;

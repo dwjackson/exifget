@@ -111,15 +111,20 @@ ifd_entry_value_load_undefined(exifget_data_t *data, struct ifd_entry *entry)
 {
     int err;
     err = EXIFGET_ENOERR;
-    if (fread(&(entry->value.value_undefined), 1, 1, data->fp) == 0) {
-        if (ferror(data->fp)) {
+    int i;
+
+    entry->value.value_undefined = malloc(sizeof(uint8_t) * entry->count);
+    for (i = 0; i < entry->count; i++) {
+        if (fread(entry->value.value_undefined + i, 1, 1, data->fp) == 0) {
+            if (ferror(data->fp)) {
 #ifdef DEBUG
-            perror(NULL);
-            fprintf(stderr, "Could not read undefined data\n");
-            perror(NULL);
-            abort();
+                perror(NULL);
+                fprintf(stderr, "Could not read undefined data\n");
+                perror(NULL);
+                abort();
 #endif /* DEBUG */
-            err = EXIFGET_EREAD;
+                err = EXIFGET_EREAD;
+            }
         }
     }
     return err;

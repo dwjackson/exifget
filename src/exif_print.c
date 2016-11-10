@@ -19,8 +19,8 @@ print_ifd_entry(const exifget_data_t *data, const struct ifd_entry *entry)
     switch(entry->type) {
     case EXIFGET_IFD_ENTRY_DATA_TYPE_BYTE:
         for (i = 0; i < entry->count; i++) {
-            printf("0x%x", entry->value.value_byte);
-            if (i + 1 < entry->count - 1) {
+            printf("0x%x", entry->value.value_byte[i]);
+            if (i + 1 < entry->count) {
                 printf(",");
             }
         }
@@ -43,7 +43,12 @@ print_ifd_entry(const exifget_data_t *data, const struct ifd_entry *entry)
         printf("%hhd", entry->value.value_sbyte);
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_UNDEFINED:
-        printf("0x%X", entry->value.value_byte);
+        for (i = 0; i < entry->count; i++) {
+            printf("0x%X", entry->value.value_undefined[i]);
+            if (i + 1 < entry->count) {
+                printf(",");
+            }
+        }
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_SSHORT:
         printf("%hd", entry->value.value_sshort);

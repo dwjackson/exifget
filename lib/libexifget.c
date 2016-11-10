@@ -231,7 +231,7 @@ exifget_next_ifd_entry(exifget_data_t *data, struct ifd_entry *entry)
         return EXIFGET_EREAD;
     }
     entry->value_offset = value_offset;
-    entry->value.value_ascii= NULL;
+    entry->value.value_ascii = NULL;
 
     data->ifd.current_entry_index++;
 
@@ -290,6 +290,17 @@ exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
     int err;
 
     err = EXIFGET_ENOERR;
+
+    /* Skip the MakerNote proprietary extensions */
+    if (entry->tag == EXIF_TAG_MAKER_NOTE) {
+        entry->count = 0;
+        return err;
+    }
+    /* Skip the user comment */
+    if (entry->tag == EXIF_TAG_USER_COMMENT) {
+        entry->count = 0;
+        return err;
+    }
 
     current_offset = ftell(data->fp);
     if (entry_value_size(entry) > BYTES_PER_VALUE_OFFSET) {
@@ -358,6 +369,9 @@ exifget_ifd_entry_value_unload(struct ifd_entry *entry)
         break;
     case EXIFGET_IFD_ENTRY_DATA_TYPE_ASCII:
         free(entry->value.value_ascii);
+        break;
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_UNDEFINED:
+        free(entry->value.value_undefined);
         break;
     default:
         break;
