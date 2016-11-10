@@ -30,7 +30,7 @@ struct ifd_entry_value_srational {
 };
 
 union ifd_entry_value {
-    uint8_t value_byte;
+    uint8_t *value_byte;
     uint16_t value_short;
     uint32_t value_long;
     char *value_ascii;

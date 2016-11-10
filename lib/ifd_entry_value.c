@@ -9,14 +9,18 @@ ifd_entry_value_load_byte(exifget_data_t *data, struct ifd_entry *entry)
 {
     int err;
     err = EXIFGET_ENOERR;
+    int i;
 
-    if (fread(&(entry->value.value_byte), 1, 1, data->fp) == 0) {
-        if (ferror(data->fp)) {
+    entry->value.value_byte = malloc(sizeof(uint8_t) * entry->count);
+    for (i = 0; i < entry->count; i++) {
+        if (fread(entry->value.value_byte + i, 1, 1, data->fp) == 0) {
+            if (ferror(data->fp)) {
 #ifdef DEBUG
-            fprintf(stderr, "Could not read byte data\n");
-            abort();
+                fprintf(stderr, "Could not read byte data\n");
+                abort();
 #endif /* DEBUG */
-            err = EXIFGET_EREAD;
+                err = EXIFGET_EREAD;
+            }
         }
     }
     return err;

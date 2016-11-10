@@ -352,10 +352,16 @@ done:
 void
 exifget_ifd_entry_value_unload(struct ifd_entry *entry)
 {
-    if (entry->type == EXIFGET_IFD_ENTRY_DATA_TYPE_ASCII) {
+    switch (entry->type) {
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_BYTE:
+        free(entry->value.value_byte);
+        break;
+    case EXIFGET_IFD_ENTRY_DATA_TYPE_ASCII:
         free(entry->value.value_ascii);
+        break;
+    default:
+        break;
     }
-    entry->value.value_ascii = NULL;
 }
 
 const char
