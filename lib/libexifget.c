@@ -352,6 +352,10 @@ exifget_ifd_entry_value_load(exifget_data_t *data, struct ifd_entry *entry)
         break;
     default:
         err = EXIFGET_EDATATYPE;
+#ifdef DEBUG
+        fprintf(stderr, "ERROR: Unrecognized data type %d\n", entry->type);
+        abort();
+#endif /* DEBUG */
         break;
     }
 
@@ -399,6 +403,12 @@ static const char *exifget_error_messages[] = {
 void
 exifget_perror(int err)
 {
+#ifdef DEBUG
+    if (err < 0 || err > EXIFGET_NUM_ERRORS) {
+        fprintf(stderr, "Invalid error number: %d\n", err);
+        abort();
+    }
+#endif /* DEBUG */
     const char *err_msg = exifget_error_messages[err];
     fprintf(stderr, "ERROR: %s\n", err_msg);
 }

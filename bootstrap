@@ -28,5 +28,5 @@ if [ "$build_type" = "$BUILD_TYPE_RELEASE" ]
 then
     ./configure $@
 else
-    ./configure CPPFLAGS='-g -O0 -DDEBUG' $@
+    ./configure CFLAGS='-g -O0 -DDEBUG' $@
 fi

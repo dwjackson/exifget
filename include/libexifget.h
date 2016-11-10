@@ -78,7 +78,8 @@ const char
 #define EXIFGET_EBADMAGIC 5
 #define EXIFGET_EOFFSET 6
 #define EXIFGET_EREAD 7
-#define EXIFGET_EDATATYPE 9
+#define EXIFGET_EDATATYPE 8
+#define EXIFGET_NUM_ERRORS 9
 
 void
 exifget_perror(int err);
