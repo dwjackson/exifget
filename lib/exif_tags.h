@@ -28,6 +28,7 @@ struct exif_tag {
 #define EXIF_TAG_Y_RESOLUTION                   283
 #define EXIF_TAG_PLANAR_CONFIGURATION           284
 #define EXIF_TAG_RESOLUTION_UNIT                296
+#define EXIF_TAG_SOFTWARE                       305
 #define EXIF_TAG_DATETIME                       306
 #define EXIF_TAG_ARTIST                         315
 #define EXIF_TAG_JPEG_INTERCHANGE_FORMAT        513
@@ -43,10 +44,13 @@ struct exif_tag {
 #define EXIF_TAG_DATETIME_ORIGINAL            36867
 #define EXIF_TAG_DATETIME_DIGITIZED           36868
 #define EXIF_TAG_COMPONENTS_CONFIGURATION     37121
+#define EXIF_TAG_COMPRESSED_BITS_PER_PIXEL    37122
 #define EXIF_TAG_SHUTTER_SPEED                37377
 #define EXIF_TAG_APERTURE                     37378
 #define EXIF_TAG_EXPOSURE_BIAS                37380
+#define EXIF_TAG_MAX_APERTURE_VALUE           37381
 #define EXIF_TAG_METERING_MODE                37383
+#define EXIF_TAG_LIGHT_SOURCE                 37384
 #define EXIF_TAG_FLASH                        37385
 #define EXIF_TAG_FOCAL_LENGTH                 37386
 #define EXIF_TAG_MAKER_NOTE                   37500
@@ -62,10 +66,22 @@ struct exif_tag {
 #define EXIF_TAG_FOCAL_PLANE_X_RESOLUTION     41486
 #define EXIF_TAG_FOCAL_PLANE_Y_RESOLUTION     41487
 #define EXIF_TAG_FOCAL_PLANE_RESOLUTION_UNIT  41488
+#define EXIF_TAG_SENSING_METHOD               41495
+#define EXIF_TAG_FILE_SOURCE                  41728
+#define EXIF_TAG_SCENE_TYPE                   41729
+#define EXIF_TAG_CFA_PATTERN                  41730
 #define EXIF_TAG_CUSTOM_RENDERED              41985
 #define EXIF_TAG_EXPOSURE_MODE                41986
 #define EXIF_TAG_WHITE_BALANCE                41987
+#define EXIF_TAG_DIGITAL_ZOOM_RATIO           41988
+#define EXIF_TAG_FOCAL_LENGTH_IN_35MM_FILM    41989
 #define EXIF_TAG_SCENE_CAPTURE_TYPE           41990
+#define EXIF_TAG_GAIN_CONTROL                 41991
+#define EXIF_TAG_CONTRAST                     41992
+#define EXIF_TAG_SATURATION                   41993
+#define EXIF_TAG_SHARPNESS                    41994
+#define EXIF_TAG_SUBJECT_DISTANCE_RANGE       41996
+#define EXIF_TAG_OFFSET_SCHEMA                59933
 
 void
 exif_tags_array_init(struct exif_tag **exif_tags_ptr);
