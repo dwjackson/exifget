@@ -12,6 +12,7 @@
 
 #define MAGIC_NUMBER_LENGTH 4
 #define JPEG_TIFF_OFFSET 12
+#define JPEG_TIFF_OFFSET_2 30
 #define TIFF_TIFF_OFFSET 0
 
 #define BYTES_PER_TAG 2
@@ -155,6 +156,11 @@ file_tiff_offset(FILE *fp)
             && magic[2] == 0xFF
             && magic[3] == 0xE1) {
         offset = JPEG_TIFF_OFFSET;
+    } else if (magic[0] == 0xFF
+            && magic[1] == 0xD8
+            && magic[2] == 0xFF
+            && magic[3] == 0xE0) {
+        offset = JPEG_TIFF_OFFSET_2;
     } else if (magic[0] == 0x49
             && magic[1] == 0x49
             && magic[2] == 0x2A
