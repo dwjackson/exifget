@@ -1,0 +1,38 @@
+.Dd November 18, 2016
+.Dt EXIFGET 1
+.Os
+.Sh NAME
+.Nm exifget
+.Nd Read Exif information from pictures
+.Sh SYNOPSIS
+.Nm
+.Op Fl h
+.Op Fl t Ar tags
+.Op Ar picture_file
+.Sh DESCRIPTION
+Read the Exif information from pictures. By default,
+.Nm
+will print all of the data from all of the Exif tags about which it knows and
+can find in the picture file.
+.Pp
+The arguments for
+.Nm
+are as follows:
+.Bl -tag -width Ds
+.It Fl h
+Print help text
+.It Fl t Ar tags
+Specify a comma-delineated list of Exif tags to print
+.El
+.Sh EXAMPLES
+Print all of the Exif tags and their associated data from
+.Ar picture_file
+to the standard output:
+.Pp
+.Dl $ exifget picture_file
+.Pp
+Print the DateTime tag and DateTimeOriginal tag from
+.Ar picture_file
+to the standard output:
+.Pp
+.Dl $ exifget -t DateTime,DateTimeOriginal picture_file
