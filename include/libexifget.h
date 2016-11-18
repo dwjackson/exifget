@@ -84,4 +84,7 @@ const char
 void
 exifget_perror(int err);
 
+uint16_t
+exifget_tag_from_tag_name(const exifget_data_t *data, const char *tag_name);
+
 #endif /* EXIFGET_H */

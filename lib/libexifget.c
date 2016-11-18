@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define BYTE_ORDER_TEST_NUMBER 0x12345678
 #define LEAST_SIGNIFICANT_BYTE 0x78
@@ -417,4 +418,22 @@ exifget_perror(int err)
 #endif /* DEBUG */
     const char *err_msg = exifget_error_messages[err];
     fprintf(stderr, "ERROR: %s\n", err_msg);
+}
+
+uint16_t
+exifget_tag_from_tag_name(const exifget_data_t *data, const char *tag_name)
+{
+    uint16_t tag;
+    int i;
+    struct exif_tag exif_tag;
+    
+    tag = 0;
+    for (i = 0; i < NUM_EXIF_TAGS; i++) {
+        exif_tag = (data->exif_tags)[i];
+        if (strcmp(exif_tag.name, tag_name)) {
+            tag = exif_tag.id;
+            break;
+        }
+    }
+    return tag;
 }
