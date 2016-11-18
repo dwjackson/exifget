@@ -51,11 +51,16 @@ main(int argc, char *argv[])
 
     file_name = argv[optind];
     err = exifget_open(file_name, &data);
-    exifget_options_set_tags(data, &opts, optarg);
     if (err != EXIFGET_ENOERR) {
         exifget_perror(err);
         exit(EXIT_FAILURE);
     }
+
+    /* Set up Options */
+    if (delineated_tags != NULL) {
+        exifget_options_set_tags(data, &opts, delineated_tags);
+    }
+
     while ((retval = exifget_next_ifd_entry(data, &entry)) == 0) {
         retval = exifget_ifd_entry_value_load(data, &entry);
         if (retval != EXIFGET_ENOERR) {
