@@ -61,6 +61,7 @@ main(int argc, char *argv[])
         exifget_options_set_tags(data, &opts, delineated_tags);
     }
 
+    /* Read the picture file's Exif data */
     while ((retval = exifget_next_ifd_entry(data, &entry)) == 0) {
         retval = exifget_ifd_entry_value_load(data, &entry);
         if (retval != EXIFGET_ENOERR) {

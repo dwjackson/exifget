@@ -430,7 +430,7 @@ exifget_tag_from_tag_name(const exifget_data_t *data, const char *tag_name)
     tag = 0;
     for (i = 0; i < NUM_EXIF_TAGS; i++) {
         exif_tag = (data->exif_tags)[i];
-        if (strcmp(exif_tag.name, tag_name)) {
+        if (strcmp(exif_tag.name, tag_name) == 0) {
             tag = exif_tag.id;
             break;
         }

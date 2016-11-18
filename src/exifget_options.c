@@ -1,4 +1,5 @@
 #include "exifget_options.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -34,7 +35,11 @@ exifget_options_set_tags(const exifget_data_t *data,
     char *last;
     uint16_t tag_id;
     
-    num_tags = 0;
+    if (strlen(tags_arg) > 0) {
+        num_tags = 1;
+    } else {
+        num_tags = 0;
+    }
     for (i = 0; i < strlen(tags_arg); i++) {
         ch = tags_arg[i];
         if (ch == DELIMITER_CHAR) {
@@ -57,6 +62,10 @@ exifget_options_set_tags(const exifget_data_t *data,
     i = 0;
     while (tag != NULL) {
         tag_id = exifget_tag_from_tag_name(data, tag);
+        if (tag_id == 0) {
+            fprintf(stderr, "Unrecognized tag: %s\n", tag);
+            exit(EXIT_FAILURE);
+        }
         (opts->tags)[i] = tag_id;
         tag = strtok_r(NULL, DELIMITER_STR, &last);
         i++;
