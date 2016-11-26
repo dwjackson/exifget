@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #define EXIFGET_FLAG_TAGS 0x1
+#define EXIFGET_FLAG_LIST 0x2
 
 struct exifget_options {
     uint32_t flags;

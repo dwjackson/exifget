@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <unistd.h>
 
 #define USAGE_FMT "Usage: %s [photo_file]\n"
@@ -25,6 +26,7 @@ main(int argc, char *argv[])
     struct exifget_options opts;
     char *delineated_tags;
     int i;
+    const char *tag_name;
 
     if (argc < 2) {
         printf(USAGE_FMT, argv[0]);
@@ -34,11 +36,14 @@ main(int argc, char *argv[])
     delineated_tags = NULL;
 
     exifget_options_init(&opts);
-    while ((opt = getopt(argc, argv, "ht:")) != -1) {
+    while ((opt = getopt(argc, argv, "hlt:")) != -1) {
         switch(opt) {
         case 'h':
             print_help(argv);
             exit(EXIT_SUCCESS);
+            break;
+        case 'l':
+            opts.flags |= EXIFGET_FLAG_LIST;
             break;
         case 't':
             delineated_tags = strdup(optarg);
@@ -73,6 +78,9 @@ main(int argc, char *argv[])
                     print_ifd_entry(data, &entry);
                 }
             }
+        } else if (opts.flags & EXIFGET_FLAG_LIST) {
+            tag_name = exifget_tag_name(data, &entry);
+            printf("%s\n", tag_name);
         } else {
             print_ifd_entry(data, &entry);
         }
@@ -99,5 +107,6 @@ print_help(char *argv[])
     printf(USAGE_FMT, argv[0]);
     printf("Options:\n");
     printf("\t-h Show this help text\n");
+    printf("\t-l List tags in the file, do not print values\n");
     printf("\t-t Specify a comma-delimited list of Exif tags to print\n");
 }
