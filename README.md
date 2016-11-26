@@ -35,6 +35,8 @@ To read all the Exif data that ExifGet can find in a picture file:
 exifget [picture_file]
 ```
 
+To get summary information about flags and options, run `exifget -h`.
+
 ## Supported File Types
 
 ExifGet has been tested on the following picture file formats:
